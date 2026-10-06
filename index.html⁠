@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الأحياء التجريبي - أبو زهرة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --accent: #f59e0b;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الصفحة الأولى */
+        .top-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-bless {
+            font-size: 1rem;
+            color: #059669;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .prepared-by {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .note-box {
+            background-color: #fef3c7;
+            border-right: 5px solid var(--accent);
+            color: #92400e;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 30px 0;
+            font-weight: 700;
+        }
+
+        .btn-center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* أسئلة الاختبار */
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        .question-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            background: #ffffff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .option-label input[type="radio"] {
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* النتيجة */
+        .result-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .review-box {
+            margin-top: 25px;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .review-item {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .review-item.correct {
+            background-color: #d1fae5;
+            border-right: 4px solid var(--correct);
+        }
+
+        .review-item.incorrect {
+            background-color: #fee2e2;
+            border-right: 4px solid var(--incorrect);
+        }
+
+        .advice-text {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #d97706;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- الصفحة الأولى -->
+    <div id="page-start" class="page active">
+        <div class="top-header">
+            <div class="header-bless">اللهم صلِّ وسلم على نبينا محمد ﷺ</div>
+            <div class="prepared-by">إعداد: أبو زهرة</div>
+        </div>
+        
+        <div class="note-box">
+            الاختبار ذا يشوفك كيف ذاكرت يعني تجريبي
+        </div>
+
+        <div class="btn-center-wrapper">
+            <button class="btn" onclick="startQuiz()">يلا خش الاختبار</button>
+        </div>
+    </div>
+
+    <!-- صفحة الاختبار -->
+    <div id="page-quiz" class="page">
+        <h2 class="quiz-title">اختبار الأحياء التجريبي (20 سؤال - 20 درجة)</h2>
+        <div id="questions-container"></div>
+        <div class="btn-center-wrapper">
+            <button type="button" class="btn" onclick="submitQuiz()">يلا شوف نتيجتك</button>
+        </div>
+    </div>
+
+    <!-- صفحة النتيجة -->
+    <div id="page-result" class="page">
+        <div class="result-header">
+            <h2>نتيجة الاختبار</h2>
+            <div class="score-display" id="score-text">0 / 20</div>
+        </div>
+
+        <div class="review-box" id="review-container">
+            <h3>مراجعة تفاصيل الإجابات والأخطاء:</h3>
+            <br>
+        </div>
+
+        <div class="advice-text">قبل تعيد راجع الدروس وتعال عيد</div>
+        
+        <div class="btn-center-wrapper">
+            <button class="btn" onclick="restartQuiz()">عيد الاختبار</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const questions = [
+        // 15 سؤال اختيار من متعدد
+        { q: "1. ما هو نوع التناظر في الأفراد البالغة لشوكيات الجلد؟", options: ["جانبي", "شعاعي", "عديمة التناظر"], correct: 1 },
+        { q: "2. ما هي الهياكل التي يتكون منها الهيكل الداخلي لشوكيات الجلد؟", options: ["كربونات الكالسيوم", "السيليكا", "الكايتين"], correct: 0 },
+        { q: "3. الجهاز العصبي لشوكيات الجلد يحتوي على حلقة عصبية تحيط بـ:", options: ["المرئ", "الفم", "المعدة"], correct: 1 },
+        { q: "4. ما نوع التناظر في اليرقات لدى شوكيات الجلد؟", options: ["جانبي", "شعاعي", "كروي"], correct: 0 },
+        { q: "5. التناظر في شوكيات الجلد يختلف بين اليرقات والبالغة، حيث أن التناظر في اليرقات يكون:", options: ["جانبي", "شعاعي", "لا يوجد تناظر"], correct: 0 },
+        { q: "6. العرف العصبي هو مجموعة من الخلايا تتكون من:", options: ["الحبل العصبي في الفقاريات", "الحبل الظهري", "الجيوب البلعومية"], correct: 0 },
+        { q: "7. العمود الفقري يتكون غالباً من عظم أو غضروف لـ:", options: ["تحل محل الحبل الظهري", "تكوين القشور", "تخزين الدهون"], correct: 0 },
+        { q: "8. الزعانف الزوجية تشمل الزعانف الصدرية و:", options: ["الذيلية", "الظهرية", "الحوضية"], correct: 2 },
+        { q: "9. ما هي فائدة الخياشيم في الأسماك؟", options: ["الحصول على الأكسجين من الماء", "الحركة والسرعة", "التوازن"], correct: 0 },
+        { q: "10. وظيفة مثانة العوم في الأسماك هي:", options: ["التنفس", "السماح للسمكة بالتحكم في عمق غوصها", "الإخراج"], correct: 1 },
+        { q: "11. عضويات الإخراج في البرمائيات التي ترشح الفضلات من الدم هي:", options: ["الكلى", "الرئة", "الجلد"], correct: 0 },
+        { q: "12. تسمى حجرة استقبال فضلات الهضم والبول والبيوض في البرمائيات بـ:", options: ["المزرق (المجمع)", "المعدة", "المثانة"], correct: 0 },
+        { q: "13. غشاء يحيط بالجنين مباشرة، مملوء بسائل رهلي يحمي الجنين في الزواحف والطيور هو:", options: ["الغشاء الرهلي", "غشاء الكوريون", "كيس المح"], correct: 0 },
+        { q: "14. يكون الإخصاب في الزواحف والطيور من النوع:", options: ["إخصاب داخلي", "إخصاب خارجي", "تلاؤمي"], correct: 0 },
+        { q: "15. مخلوقات تولد حرارة جسمها عن طريق العمليات الأيضية الداخلية تسمى:", options: ["ثابتة درجة الحرارة", "متغيرة درجة الحرارة", "باردة الدم"], correct: 0 },
+        
+        // 4 أسئلة صح أو خطأ
+        { q: "16. العمود الفقري يحمي الحبل الشوكي في الكائن الحي.", options: ["صح", "خطأ"], correct: 0 },
+        { q: "17. غشاء الطبلة في البرمائيات هو غشاء رقيق خارجي يستعمل لسماع الأصوات.", options: ["صح", "خطأ"], correct: 0 },
+        { q: "18. جلد الزواحف رطب وجاف ويساعدها في عملية التنفس مثل البرمائيات.", options: ["صح", "خطأ"], correct: 1 },
+        { q: "19. درجة حرارة جسم الطيور مرتفعة مقارنة بالإنسان وتصل إلى 41C.", options: ["صح", "خطأ"], correct: 0 },
+        
+        // 1 سؤال مقالي
+        { q: "20. اكتب باختصار: ما أهمية وجود العرف العصبي في أجنة الفقاريات؟", type: "essay" }
+    ];
+
+    function startQuiz() {
+        showPage('page-quiz');
+        renderQuestions();
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const qCard = document.createElement('div');
+            qCard.className = 'question-card';
+
+            let optionsHTML = '';
+
+            if (q.type === 'essay') {
+                optionsHTML = `<textarea id="essay_ans_${index}" placeholder="اكتب إجابتك هنا..."></textarea>`;
+            } else {
+                optionsHTML = `<div class="options-group">`;
+                q.options.forEach((opt, optIdx) => {
+                    optionsHTML += `
+                        <label class="option-label">
+                            <input type="radio" name="q${index}" value="${optIdx}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                optionsHTML += `</div>`;
+            }
+
+            qCard.innerHTML = `
+                <div class="question-title">${q.q}</div>
+                ${optionsHTML}
+            `;
+            container.appendChild(qCard);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        const reviewContainer = document.getElementById('review-container');
+        reviewContainer.innerHTML = '<h3>مراجعة تفاصيل الإجابات والأخطاء:</h3><br>';
+
+        questions.forEach((q, index) => {
+            let isCorrect = false;
+            let userAnsText = "";
+            let correctAnsText = "";
+
+            if (q.type === 'essay') {
+                const essayInput = document.getElementById(`essay_ans_${index}`);
+                const textVal = essayInput ? essayInput.value.trim() : "";
+                userAnsText = textVal ? textVal : "لم يتم الإجابة";
+                
+                if (textVal.length > 2) {
+                    score += 1;
+                    isCorrect = true;
+                }
+                correctAnsText = "تتشكل منه أجزاء مهمة ومختلفة من أجسام الفقاريات أثناء النمو الجنيني.";
+            } else {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected) {
+                    const userVal = parseInt(selected.value);
+                    userAnsText = q.options[userVal];
+                    if (userVal === q.correct) {
+                        score += 1;
+                        isCorrect = true;
+                    }
+                } else {
+                    userAnsText = "لم تقم بالإجابة";
+                }
+                correctAnsText = q.options[q.correct];
+            }
+
+            const item = document.createElement('div');
+            item.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+            item.innerHTML = `
+                <strong>${q.q}</strong><br>
+                <span>إجابتك: ${userAnsText}</span><br>
+                ${!isCorrect ? `<span style="color: #065f46;">الإجابة الصحيحة: ${correctAnsText}</span>` : ''}
+            `;
+            reviewContainer.appendChild(item);
+        });
+
+        document.getElementById('score-text').innerText = `${score} / 20`;
+        showPage('page-result');
+    }
+
+    function restartQuiz() {
+        showPage('page-start');
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
